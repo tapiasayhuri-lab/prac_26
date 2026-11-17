@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TuProfe20 Lab | Ejercicio 6 - Regla de Tres Simple Inversa</title>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font-family:'Nunito',system-ui,sans-serif;background:radial-gradient(circle at top, #1e1b4b 0%, #090d16 60%, #020617 100%);color:#0f172a;user-select:none}
+button,select{font-family:inherit}
+.hidden{display:none!important}
+.app{width:100vw;height:100dvh;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.floaters{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.floaters span{position:absolute;display:block;width:20px;height:20px;border-radius:50%;background:radial-gradient(circle, rgba(56,189,248,0.8) 0%, rgba(99,102,241,0.3) 100%);box-shadow:0 0 15px rgba(59,130,246,0.6);animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(105vh) rotate(0deg) scale(0.8);opacity:0}10%{opacity:1}100%{transform:translateY(-15vh) rotate(360deg) scale(1.2);opacity:0}}
+.lab{position:absolute;inset:0;z-index:2;padding:12px;display:flex;flex-direction:column}
+.labTop{position:relative;z-index:50;width:min(98%,1450px);margin:0 auto 8px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brandpill{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:20px;border:2px solid rgba(56,189,248,0.7);background:linear-gradient(135deg, rgba(14,165,233,0.25), rgba(79,70,229,0.35));backdrop-filter:blur(12px);color:#38bdf8;font-weight:900;box-shadow:0 10px 30px rgba(14,165,233,0.3);font-size:18px;text-shadow:0 2px 4px rgba(0,0,0,0.4)}
+.stage{color:#fff;background:linear-gradient(135deg, #3b82f6, #6366f1);border:1px solid rgba(255,255,255,0.3);border-radius:14px;padding:10px 18px;font-weight:900;box-shadow:0 8px 25px rgba(59,130,246,0.4)}
+.miniBtn{border:none;background:linear-gradient(135deg, #0ea5e9, #2563eb);color:#fff;border:2px solid rgba(125,211,252,0.5);padding:10px 16px;border-radius:18px;font-weight:900;cursor:pointer;backdrop-filter:blur(8px);box-shadow:0 8px 25px rgba(14,165,233,0.4);transition:.2s transform,.2s box-shadow}
+.miniBtn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(14,165,233,0.6)}
+.board{position:relative;z-index:3;width:min(98%,1450px);margin:0 auto;flex:1;min-height:0;background:linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);border:5px solid #38bdf8;border-radius:36px;box-shadow:0 30px 80px rgba(14,165,233,0.35), 0 0 40px rgba(59,130,246,0.2) inset;overflow:hidden;display:flex;flex-direction:column}
+.boardHead{background:linear-gradient(135deg,#0f172a,#1e1b4b,#312e81);color:#fff;border-bottom:4px solid #38bdf8;padding:14px 24px;box-shadow:0 10px 25px rgba(0,0,0,0.3)}
+.boardMeta{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:1120px;margin:0 auto 6px auto}
+.topBadge{display:inline-block;padding:5px 12px;border-radius:10px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.blockTag{background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff}
+.typeTag{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+.enunciado{max-width:1120px;margin:0 auto;text-align:center;font-size:clamp(16px,1.8vw,22px);font-weight:800;line-height:1.35;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+#enunciadoEq{margin-top:6px;font-size:1.2em;color:#38bdf8;min-height:26px;filter:drop-shadow(0 2px 8px rgba(56,189,248,0.5))}
+.boardBody{flex:1;min-height:0;display:grid;grid-template-columns:1.05fr 1.35fr;background:#f8fafc}
+.half{min-width:0;min-height:0;display:flex;flex-direction:column;position:relative}
+.half.left{border-right:3px solid rgba(56,189,248,0.3)}
+.panelTitle{padding:12px 20px;border-bottom:2px solid rgba(203,213,225,0.7);background:linear-gradient(90deg,#ffffff,#f1f5f9);color:#0f172a;font-size:clamp(16px,1.5vw,20px);font-weight:900;display:flex;justify-content:space-between;align-items:center}
+.panelTitle small{font-size:13px;color:#2563eb;font-weight:800;background:#dbeafe;padding:4px 10px;border-radius:8px}
+.stepsArea{flex:1;min-height:0;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:radial-gradient(circle at center,rgba(59,130,246,.05) 2px,transparent 2px);background-size:24px 24px}
+.step{background:#fff;border:2px solid #bfdbfe;border-radius:18px;padding:12px 16px;box-shadow:0 10px 25px rgba(59,130,246,0.12);animation:slideIn .28s ease-out both;transition:transform .2s}
+.step:hover{transform:translateY(-2px);border-color:#3b82f6}
+.step.current{border-color:#38bdf8;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);box-shadow:0 12px 30px rgba(56,189,248,0.25)}
+@keyframes slideIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+.stepWhy{display:flex;align-items:center;gap:10px;margin-bottom:4px;color:#1e293b;font-size:clamp(13px,1.05vw,16px);font-weight:800}
+.stepWhy b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;flex:0 0 auto;box-shadow:0 4px 10px rgba(59,130,246,0.4)}
+.mathLine{font-size:clamp(17px,1.7vw,26px);color:#0f172a;overflow-x:auto;overflow-y:hidden;padding:4px 0;min-height:32px}
+.emptyBox{flex:1;display:grid;place-items:center;text-align:center;color:#64748b;padding:20px}
+.emptyBox strong{font-size:clamp(18px,1.8vw,26px);color:#1e293b}
+.graphWrap{flex:1;min-height:0;padding:10px 16px 8px;display:flex;flex-direction:column}
+.graphTitle{text-align:center;color:#2563eb;font-size:17px;font-weight:900;margin-bottom:4px;text-shadow:0 1px 2px rgba(0,0,0,0.1)}
+.graphBox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#ffffff,#f0fdf4);border:2px solid #38bdf8;border-radius:22px;padding:6px;box-shadow:inset 0 0 20px rgba(56,189,248,0.15);position:relative;overflow:hidden}
+.graphBox svg{width:100%;height:100%;max-height:460px;overflow:visible}
+.graphHint{font-size:13px;color:#475569;margin:6px auto;text-align:center;font-weight:700}
+.graphTip{margin-top:4px;padding:8px 14px;border-radius:12px;border:2px solid #38bdf8;background:linear-gradient(135deg,#e0f2fe,#f0fdf4);color:#0369a1;font-size:13px;font-weight:900;box-shadow:0 4px 15px rgba(56,189,248,0.2)}
+.altBox{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.altBtn{background:linear-gradient(135deg,#ffffff,#f8fafc);border:2px solid #cbd5e1;border-radius:14px;padding:10px 6px;font-weight:900;font-size:15px;color:#1e293b;cursor:pointer;transition:.2s transform,.2s background,.2s border-color,.2s box-shadow;box-shadow:0 4px 10px rgba(0,0,0,0.05)}
+.altBtn:hover{transform:translateY(-3px);background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#3b82f6;color:#1d4ed8;box-shadow:0 8px 20px rgba(59,130,246,0.3)}
+.altBtn.selected{background:linear-gradient(135deg,#059669,#047857);border-color:#10b981;color:#fff;box-shadow:0 8px 25px rgba(16,185,129,0.4);transform:scale(1.04)}
+.altBtn.wrong{background:linear-gradient(135deg,#dc2626,#b91c1c);border-color:#ef4444;color:#fff;box-shadow:0 8px 25px rgba(220,38,38,0.4)}
+.notice{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #10b981;color:#065f46;border-radius:14px;padding:10px;font-weight:900;text-align:center;font-size:15px;box-shadow:0 8px 25px rgba(16,185,129,0.3)}
+.controls{padding:10px 20px;border-top:3px solid rgba(56,189,248,0.4);background:#ffffff;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;position:relative;z-index:50}
+.group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctrl{border:none;border-radius:16px;padding:10px 18px;font-size:15px;font-weight:900;cursor:pointer;transition:.2s transform,.2s box-shadow;box-shadow:0 6px 20px rgba(0,0,0,0.15)}
+.ctrl:hover{transform:translateY(-2px)}
+.ctrl:active{transform:translateY(2px);box-shadow:none}
+.ctrl.main{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;box-shadow:0 6px 20px rgba(14,165,233,0.4)}
+.ctrl.alt{background:linear-gradient(135deg,#f1f5f9,#e2e8f0);color:#334155;border:2px solid #cbd5e1}
+.ctrl.gold{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 6px 20px rgba(59,130,246,0.4)}
+.progressShell{width:160px;height:14px;background:#e0f2fe;border-radius:999px;overflow:hidden;border:2px solid #bae6fd}
+.progressBar{height:100%;background:linear-gradient(90deg,#3b82f6,#6366f1,#0ea5e9);width:0%;transition:width .3s}
+@media (max-width:900px){.boardBody{grid-template-columns:1fr;overflow:auto}.half.left{min-height:260px}.half.right{min-height:340px}.board{overflow:auto}.stepsArea{max-height:35vh}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="floaters" id="floaters"></div>
+  <section class="lab" id="labView">
+    <div class="labTop">
+      <span class="brandpill">🚀 TuProfe20 Lab · Ejercicio 6</span>
+      <span class="stage">REGLA DE TRES SIMPLE INVERSA</span>
+      <button class="miniBtn" id="toggleMute">🔊 Sonido</button>
+    </div>
+    <div class="board">
+      <div class="boardHead">
+        <div class="boardMeta">
+          <span class="topBadge blockTag">BLOQUE 03 · MAGNITUDES PROPORCIONALES</span>
+          <span class="topBadge typeTag">INVERSAMENTE PROPORCIONAL</span>
+        </div>
+        <div class="enunciado">
+          <div>Un grupo de 15 obreros puede construir un muro en 20 días. ¿Cuántos días tardarán 25 obreros trabajando al mismo ritmo para construir un muro idéntico?</div>
+          <div id="enunciadoEq"></div>
+        </div>
+      </div>
+      <div class="boardBody">
+        <div class="half left">
+          <div class="panelTitle">✍️ Resolución paso a paso <small id="stepMeta">0 de 5 pasos</small></div>
+          <div class="stepsArea" id="stepsArea"></div>
+        </div>
+        <div class="half right">
+          <div class="panelTitle">📊 Análisis e interpretación <small>Método de Simplificación</small></div>
+          <div class="graphWrap">
+            <div class="graphTitle" id="graphTitle">Esquema de proporcionalidad inversa</div>
+            <div class="graphBox" id="graphBox"></div>
+            <div class="graphHint">A más obreros, menos días de trabajo (Inversamente Proporcionales).</div>
+            <div class="graphTip" id="graphTip">Selecciona la alternativa correcta abajo:</div>
+            <div class="altBox" id="altBox">
+              <button class="altBtn" data-alt="A">A. 12 días</button>
+              <button class="altBtn" data-alt="B">B. 10 días</button>
+              <button class="altBtn" data-alt="C">C. 15 días</button>
+              <button class="altBtn" data-alt="D">D. 8 días</button>
+              <button class="altBtn" data-alt="E">E. 14 días</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="group">
+          <button class="ctrl alt" id="prevStep">↶ Paso anterior</button>
+          <button class="ctrl main" id="nextStep">Siguiente paso ▶</button>
+          <button class="ctrl gold" id="solveAll">Resolver todo ★</button>
+          <button class="ctrl alt" id="restart">↻ Reiniciar</button>
+        </div>
+        <div class="group">
+          <div class="progressShell"><div class="progressBar" id="progressBar"></div></div>
+          <strong id="progressTxt">0 / 5</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const $ = id=>document.getElementById(id);
+let revealed=0, selectedAlt=null;
+const STEPS=[
+{why:'Analizamos la relación: A mayor número de obreros, se requieren menos días (Inversamente Proporcionales).',math:'\\text{Obreros (I.P.) Días}',phase:0},
+{why:'Planteamos el producto constante horizontal (Obreros \\times Días = Constante).',math:'15 \\times 20 = 25 \\times x',phase:0},
+{why:'Despejamos la incógnita x pasando el 25 a dividir.',math:'x = \\frac{15 \\times 20}{25}',phase:0},
+{why:'Simplificamos sacando quinta a 15 y 25, y luego quinta a 20 y 5.',math:'x = \\frac{3 \\times \\cancel{20}^{4}}{\\cancel{25}_{5}} = 3 \\times 4',phase:1},
+{why:'Multiplicamos los valores restantes para hallar el resultado final.',math:'\\boxed{x = 12 \\text{ días}}',phase:2}
+];
+
+function math(tex,el,display=false){
+  if(window.katex){
+    try{window.katex.render(tex,el,{displayMode:display,throwOnError:false,strict:'ignore'});return;}catch(e){}
+  }
+  el.textContent=tex;
+}
+
+function createFloaters(){
+  const f=$('floaters');
+  for(let i=0;i<14;i++){
+    const s=document.createElement('span');
+    s.style.left=Math.random()*100+'%';
+    s.style.animationDuration=(12+Math.random()*16)+'s';
+    s.style.animationDelay=-Math.random()*20+'s';
+    f.appendChild(s);
+  }
+}
+
+function graph(){
+  let svg=`<svg viewBox="0 0 680 390" role="img" aria-label="Tabla de Regla de Tres Simple Inversa Ampliada">
+    <defs>
+      <linearGradient id="gbox" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f0f9ff"/><stop offset="100%" stop-color="#e0f2fe"/>
+      </linearGradient>
+      <linearGradient id="headerGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/>
+      </linearGradient>
+      <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.15"/>
+      </filter>
+    </defs>
+    
+    <rect x="25" y="10" width="630" height="335" rx="22" fill="url(#gbox)" stroke="#0ea5e9" stroke-width="4" filter="url(#shadow)"/>
+    <text x="340" y="45" font-size="22" font-weight="900" fill="#0369a1" text-anchor="middle">TABLA DE MAGNITUDES INVERSAS</text>
+    
+    <!-- Table Header -->
+    <rect x="75" y="68" width="250" height="60" fill="url(#headerGrad)" rx="12"/>
+    <text x="200" y="105" font-size="19" font-weight="900" fill="#38bdf8" text-anchor="middle">N° OBREROS</text>
+    
+    <rect x="355" y="68" width="250" height="60" fill="url(#headerGrad)" rx="12"/>
+    <text x="480" y="105" font-size="19" font-weight="900" fill="#38bdf8" text-anchor="middle">N° DÍAS</text>
+
+    <!-- Row 1 (Given) -->
+    <rect x="75" y="134" width="250" height="78" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" rx="8"/>
+    <text x="200" y="185" font-size="30" font-weight="900" fill="#0f172a" text-anchor="middle">15</text>
+    
+    <rect x="355" y="134" width="250" height="78" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" rx="8"/>
+    <text x="480" y="185" font-size="30" font-weight="900" fill="#0f172a" text-anchor="middle">20</text>
+
+    <!-- Row 2 (Unknown / Result) -->
+    <rect x="75" y="218" width="250" height="78" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" rx="8"/>
+    <text x="200" y="269" font-size="30" font-weight="900" fill="#0f172a" text-anchor="middle">25</text>
+    
+    <rect x="355" y="218" width="250" height="78" fill="${revealed>=5?'#d1fae5':'#ffffff'}" stroke="${revealed>=5?'#10b981':'#cbd5e1'}" stroke-width="${revealed>=5?'4':'3'}" rx="8"/>
+    <text x="480" y="269" font-size="32" font-weight="900" fill="${revealed>=5?'#065f46':'#0f172a'}" text-anchor="middle">${revealed>=5?'12 (x)':'x'}</text>`;
+
+  if(revealed>=2){
+    svg+=`<path d="M 325 173 L 355 173" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="325" cy="173" r="6" fill="#2563eb"/>
+          <circle cx="355" cy="173" r="6" fill="#2563eb"/>
+          
+          <path d="M 325 257 L 355 257" fill="none" stroke="#059669" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="325" cy="257" r="6" fill="#059669"/>
+          <circle cx="355" cy="257" r="6" fill="#059669"/>
+
+          <rect x="180" y="312" width="320" height="32" rx="16" fill="#1e1b4b" opacity="0.9"/>
+          <text x="340" y="334" font-size="16" font-weight="900" fill="#38bdf8" text-anchor="middle">15 × 20 = 25 × x (Constante Inversa)</text>`;
+  }
+  svg+=`</svg>`;
+  return svg;
+}
+
+function render(){
+  math('\\text{Obreros } (15 \\rightarrow 25) \\quad \\text{vs} \\quad \\text{Días } (20 \\rightarrow x)', $('enunciadoEq'), true);
+  
+  const area=$('stepsArea');
+  area.innerHTML='';
+  if(!revealed){
+    area.innerHTML='<div class="emptyBox"><div><strong>¿Cómo resolvemos este ejercicio?</strong><p>Presiona <b>Siguiente paso</b> para ver el análisis detallado paso a paso.</p></div></div>';
+  }else{
+    STEPS.slice(0,revealed).forEach((s,i)=>{
+      const d=document.createElement('div');
+      d.className='step'+(i===revealed-1?' current':'');
+      d.innerHTML=`<div class="stepWhy"><b>${i+1}</b><span>${s.why}</span></div><div class="mathLine"></div>`;
+      area.appendChild(d);
+      math(s.math,d.querySelector('.mathLine'),true);
+    });
+    if(revealed===5){
+      const d=document.createElement('div');
+      d.className='notice';
+      d.textContent='✓ Respuesta correcta: Opción A (12 días). ¡Excelente trabajo!';
+      area.appendChild(d);
+    }
+    area.scrollTop=area.scrollHeight;
+  }
+  $('graphBox').innerHTML=graph();
+  $('stepMeta').textContent=`${revealed} de 5 pasos`;
+  $('progressTxt').textContent=`${revealed} / 5`;
+  $('progressBar').style.width=(revealed*20)+'%';
+  $('nextStep').disabled=revealed===5;
+  $('prevStep').disabled=revealed===0;
+}
+
+$('nextStep').onclick=()=>{playSound('step');revealed=Math.min(5,revealed+1);render();};
+$('prevStep').onclick=()=>{playSound('click');revealed=Math.max(0,revealed-1);render();};
+$('solveAll').onclick=()=>{playSound('success');revealed=5;render();};
+$('restart').onclick=()=>{playSound('click');revealed=0;selectedAlt=null;document.querySelectorAll('.altBtn').forEach(b=>b.classList.remove('selected','wrong'));render();};
+
+document.querySelectorAll('.altBtn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.altBtn').forEach(b=>b.classList.remove('selected','wrong'));
+    selectedAlt=btn.dataset.alt;
+    if(selectedAlt==='A'){
+      btn.classList.add('selected');
+      playSound('success');
+      revealed=5;
+      render();
+    }else{
+      btn.classList.add('wrong');
+      playSound('click');
+    }
+  };
+});
+
+// Audio feedback
+let soundEnabled=true, audioContext=null;
+function playSound(kind='click'){
+  if(!soundEnabled)return;
+  try{
+    const AudioCtx=window.AudioContext||window.webkitAudioContext;
+    if(!AudioCtx)return;
+    if(!audioContext)audioContext=new AudioCtx();
+    if(audioContext.state==='suspended')audioContext.resume().catch(()=>{});
+    const now=audioContext.currentTime;
+    const notes=kind==='success'?[660,830,1046]:kind==='step'?[520,710]:[440,600];
+    notes.forEach((freq,i)=>{
+      const o=audioContext.createOscillator(), gain=audioContext.createGain();
+      const start=now+i*.05, end=start+.1;
+      o.type='sine';o.frequency.setValueAtTime(freq,start);
+      gain.gain.setValueAtTime(.0001,start);
+      gain.gain.exponentialRampToValueAtTime(.06,start+.01);
+      gain.gain.exponentialRampToValueAtTime(.0001,end);
+      o.connect(gain);gain.connect(audioContext.destination);o.start(start);o.stop(end+.01);
+    });
+  }catch(e){}
+}
+$('toggleMute').onclick=()=>{soundEnabled=!soundEnabled;$('toggleMute').textContent=soundEnabled?'🔊 Sonido':'🔇 Silencio';};
+
+// Init
+createFloaters();
+setTimeout(()=>{ render(); }, 150);
+</script>
+</body>
+</html>
